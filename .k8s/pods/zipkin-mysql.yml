@@ -2,47 +2,38 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql
+  name: zipkin-mysql
 spec:
   ports:
   - port: 3306
   selector:
-    app: mysql
+    app: zipkin-mysql
   clusterIP: None
 ---
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: mysql
+  name: zipkin-mysql
 spec:
+  serviceName: kafka-listener
   selector:
     matchLabels:
-      app: mysql
+      app: zipkin-mysql
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: mysql
+        app: zipkin-mysql
     spec:
       containers:
-      - image: mysql
-        name: mysql
+      - image: openzipkin/zipkin-mysql
+        name: zipkin-mysql
         resources:
           limits:
             cpu: "1"
           requests:
             cpu: "0.1"
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          value: password
         ports:
         - containerPort: 3306
-          name: mysql
-        volumeMounts:
-        - name: mysql-persistent-storage
-          mountPath: /var/lib/mysql
-      volumes:
-      - name: mysql-persistent-storage
-        persistentVolumeClaim:
-          claimName: mysql-pv-claim
+          name: zipkin-mysql

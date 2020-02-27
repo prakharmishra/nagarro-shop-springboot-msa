@@ -1,3 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-listener
+  labels:
+    app: kafka
+spec:
+  ports:
+  - port: 9093
+    name: server
+  selector:
+    app: kafka
+  clusterIP: None
+---
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -16,7 +30,7 @@ spec:
   selector:
     matchLabels:
       app: kafka
-  serviceName: kafka-hs
+  serviceName: kafka-listener
   replicas: 1
   podManagementPolicy: Parallel
   updateStrategy:
@@ -29,33 +43,33 @@ spec:
       # affinity:
       #   podAntiAffinity:
       #     requiredDuringSchedulingIgnoredDuringExecution:
-      #       - labelSelector:
+      #     - labelSelector:
+      #         matchExpressions:
+      #         - key: "app"
+      #           operator: In
+      #           values:
+      #           - kafka
+      #       topologyKey: "kubernetes.io/hostname"
+      #   podAffinity:
+      #     preferredDuringSchedulingIgnoredDuringExecution:
+      #     - weight: 1
+      #       podAffinityTerm:
+      #         labelSelector:
       #           matchExpressions:
-      #             - key: "app"
-      #               operator: In
-      #               values:
-      #               - kafka
-      #         topologyKey: "kubernetes.io/hostname"
-        # podAffinity:
-        #   preferredDuringSchedulingIgnoredDuringExecution:
-        #     - weight: 1
-        #       podAffinityTerm:
-        #         labelSelector:
-        #           matchExpressions:
-        #             - key: "app"
-        #               operator: In
-        #               values:
-        #               - zk
-        #         topologyKey: "kubernetes.io/hostname"
+      #             key: "app"
+      #             operator: In
+      #             values:
+      #             - zk
+      #           topologyKey: "kubernetes.io/hostname"
       terminationGracePeriodSeconds: 300
       containers:
-      - name: k8skafka
+      - name: kafka
         # imagePullPolicy: Always
         image: gcr.io/google_containers/kubernetes-kafka:1.0-10.2.1
         resources:
           requests:
             memory: "1Gi"
-            cpu: "0.5"
+            cpu: "0.1"
         ports:
         - containerPort: 9093
           name: server
@@ -154,9 +168,9 @@ spec:
           value : "-Xmx512M -Xms512M"
         - name: KAFKA_OPTS
           value: "-Dlogging.level=INFO"
-        volumeMounts:
-        - name: datadir
-          mountPath: /var/lib/kafka
+        # volumeMounts:
+        # - name: datadir
+        #   mountPath: /var/lib/kafka
         readinessProbe:
           exec:
            command:
@@ -166,7 +180,7 @@ spec:
       # securityContext:
       #   runAsUser: 1000
       #   fsGroup: 1000
-      volumes:
-      - name: kafka-persistent-storage
-        persistentVolumeClaim:
-          claimName: kafka-pv-claim
+      # volumes:
+      # - name: kafka-persistent-storage
+      #   persistentVolumeClaim:
+      #     claimName: kafka-pv-claim
