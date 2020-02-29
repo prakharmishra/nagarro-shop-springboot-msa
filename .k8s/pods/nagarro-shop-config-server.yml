@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:  
+  name: config-server
+spec:
+  selector:    
+    name: nagarro-shop-config-server
+  type: LoadBalancer
+  ports:  
+  - name: http
+    port: 8888
+    targetPort: 8888
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nagarro-shop-config-server
+  labels:
+    name: nagarro-shop-config-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: nagarro-shop-config-server
+  template:
+    metadata:
+      labels:
+        name: nagarro-shop-config-server
+    spec:
+      containers:
+      - name: nagarro-shop-config-server
+        image: prakhar/nagarro-shop-config-server:v1
+        ports:
+        - containerPort: 8888
+        resources:
+          limits:
+            cpu: "1"
+          requests:
+            cpu: "0.1"

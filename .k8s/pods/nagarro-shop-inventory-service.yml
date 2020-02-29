@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:  
+  name: inventory-service
+spec:
+  selector:    
+    name: nagarro-shop-inventory-service
+  type: ClusterIP
+  ports:  
+  - name: http
+    port: 80
+    targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nagarro-shop-inventory-service
+  labels:
+    name: nagarro-shop-inventory-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: nagarro-shop-inventory-service
+  template:
+    metadata:
+      labels:
+        name: nagarro-shop-inventory-service
+    spec:
+      containers:
+      - name: nagarro-shop-inventory-service
+        image: prakhar/nagarro-shop-inventory-service:v1
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "1"
+          requests:
+            cpu: "0.1"

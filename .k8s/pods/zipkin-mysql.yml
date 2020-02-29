@@ -1,4 +1,4 @@
-
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -15,12 +15,10 @@ kind: StatefulSet
 metadata:
   name: zipkin-mysql
 spec:
-  serviceName: kafka-listener
+  serviceName: zipkin-mysql
   selector:
     matchLabels:
       app: zipkin-mysql
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
@@ -36,4 +34,4 @@ spec:
             cpu: "0.1"
         ports:
         - containerPort: 3306
-          name: zipkin-mysql
+          name: mysql
