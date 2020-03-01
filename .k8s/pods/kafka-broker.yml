@@ -67,9 +67,12 @@ spec:
         # imagePullPolicy: Always
         image: gcr.io/google_containers/kubernetes-kafka:1.0-10.2.1
         resources:
+          limits:
+            cpu: "0.2"
+            memory: "0.5Gi"
           requests:
-            memory: "1Gi"
             cpu: "0.1"
+            memory: "0.5Gi"
         ports:
         - containerPort: 9093
           name: server
@@ -165,7 +168,7 @@ spec:
           --override reserved.broker.max.id=1000 "
         env:
         - name: KAFKA_HEAP_OPTS
-          value : "-Xmx512M -Xms512M"
+          value : "-Xmx256M -Xms256M"
         - name: KAFKA_OPTS
           value: "-Dlogging.level=INFO"
         # volumeMounts:

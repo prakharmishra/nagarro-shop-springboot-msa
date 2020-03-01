@@ -56,9 +56,12 @@ spec:
         imagePullPolicy: Always
         image: "gcr.io/google_containers/kubernetes-zookeeper:1.0-3.4.10"
         resources:
+          limits:
+            cpu: "0.2"
+            memory: "0.5Gi"
           requests:
-            memory: "1Gi"
             cpu: "0.1"
+            memory: "0.5Gi"
         ports:
         - containerPort: 2181
           name: client
