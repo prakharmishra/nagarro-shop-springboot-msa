@@ -1,0 +1,11 @@
+spring:
+  cloud:
+    config:
+      uri:
+      - http://${CONFIG_SERVER_SERVICE_HOST}:${CONFIG_SERVER_SERVICE_PORT_HTTP}
+      
+  application:
+    name: nagarro-shop-tracking-service
+  profiles:
+    active:
+    - dev
