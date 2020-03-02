@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 public class OrderService {
 
     private static Logger log = LoggerFactory.getLogger(OrderService.class);
+    
     @Autowired
     private OrderDAO orderDAO;
 
@@ -35,6 +36,9 @@ public class OrderService {
 
     @Autowired
     private ObjectMapper objectMapper;
+    
+    @Autowired
+    private MessageRelayService messageRelayService;
 
     public List<Order> getAllOrdersByUserId(Long userId) {
         return orderDAO.findByUserId(userId);
@@ -54,6 +58,8 @@ public class OrderService {
 
             OutboundMessage outbox = new OutboundMessage(Aggregate.ORDER, Operation.ORDER_RECEIVED, orderJson);
             outboxDAO.save(outbox);
+            
+            messageRelayService.relayEvents();
             
             return order;
 
