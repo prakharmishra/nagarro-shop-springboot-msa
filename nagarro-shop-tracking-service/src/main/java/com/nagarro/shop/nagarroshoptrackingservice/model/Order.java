@@ -8,18 +8,12 @@ import javax.persistence.Table;
 
 import com.nagarro.shop.nagarroshoptrackingservice.entity.BaseEntity;
 
-@Entity
-@Table(name = "order")
 public class Order extends BaseEntity {
 
-    @Column(name = "inventory_item_id")
     private Long inventoryItemId;
 
-    @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     public Long getInventoryItemId() {
