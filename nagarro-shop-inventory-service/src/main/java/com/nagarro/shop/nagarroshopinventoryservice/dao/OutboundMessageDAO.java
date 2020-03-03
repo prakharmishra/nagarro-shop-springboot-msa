@@ -15,5 +15,5 @@ import com.nagarro.shop.nagarroshopinventoryservice.entity.OutboundMessage;
 public interface OutboundMessageDAO extends CrudRepository<OutboundMessage, Long> {
 
     List<OutboundMessage> findByPublishedAtNullAndAcknowledgedAtNull();
-    List<OutboundMessage> findByAcknowledgedAtNullAndCreatedAtBefore(ZonedDateTime createdBefore);
+    List<OutboundMessage> findByAcknowledgedAtNullAndCreationTimeBefore(ZonedDateTime createdBefore);
 }
